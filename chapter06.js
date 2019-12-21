@@ -135,3 +135,103 @@ function main06() {
   console.log(dog instanceof Animal); // true
   console.log(new Animal(3) instanceof Dog); // false
 }
+
+function exercise06() {
+  // Exercises
+
+  // Vector
+  class Vec {
+    constructor(x, y) {
+      this.x = x;
+      this.y = y;
+    }
+    plus(v) {
+      return new Vec(this.x + v.x, this.y + v.y);
+    }
+    minus(v) {
+      return new Vec(this.x - v.x, this.y - v.y);
+    }
+    get length() {
+      return Math.sqrt(this.x * this.x + this.y * this.y);
+    }
+  }
+
+  console.log(new Vec(1, 2).plus(new Vec(3, 4))); // Vec {x: 4, y: 6}
+  console.log(new Vec(1, 2).minus(new Vec(2, 3))); // Vec {x: -1, y: -1}
+  console.log(new Vec(3, 4).length); // 5
+
+  // Groups (aka Set with add, delete, has methods)
+  class Group {
+    constructor() {
+      this.x = [];
+    }
+    has(elem) {
+      return this.x.includes(elem);
+    }
+    add(elem) {
+      if (!this.has(elem)) {
+        this.x.push(elem);
+      }
+      return this;
+    }
+    delete(elem) {
+      if (!this.has(elem)) {
+        return this;
+      }
+      let len = this.x.length;
+      let idx = this.x.findIndex(x => x === elem);
+      if (idx == 0) {
+        this.x.shift();
+      } else if (idx == len - 1) {
+        this.x.pop();
+      } else {
+        this.x = this.x.slice(0, idx).concat(this.x.slice(idx + 1, len));
+      }
+      return this;
+    }
+    static from(iter) {
+      let out = new Group();
+      iter.forEach(x => out.add(x));
+      return out;
+    }
+  }
+  let group = Group.from(["a", 1, 5, 8, true]);
+  console.log(group.has(1)); // true
+  console.log(group.has("hello")); // false
+  console.log(group.delete(5)); // Group {x: ["a", 1, 8, true]}
+  console.log(group.add(10)); // Group {x: ["a", 1, 8, true, 10]}
+
+  // Iterable groups
+  // for (let i of group) {} // TypeError: group is not iterable
+  class IterableGroup extends Group {
+    static from(iter) {
+      let out = new IterableGroup();
+      iter.forEach(x => out.add(x));
+      return out;
+    }
+
+    [Symbol.iterator]() {
+      return new GroupIterator(this);
+    }
+  }
+  class GroupIterator {
+    constructor(group) {
+      this.idx = 0;
+      this.group = group;
+    }
+    next() {
+      if (this.idx >= this.group.x.length) {
+        return {
+          done: true
+        };
+      }
+      return {
+        value: this.group.x[this.idx++],
+        done: false
+      };
+    }
+  }
+  for (let i of IterableGroup.from(["I", "can", "iterate"])) {
+    console.log(i);
+  }
+}
