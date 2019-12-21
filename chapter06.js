@@ -1,102 +1,137 @@
-function speak(line) {
-  console.log(`The ${this.type} rabbit says '${line}'`);
-}
-var whiteRabbit = {
-  type: "white",
-  speak
-};
-var hungryRabbit = {
-  type: "hungry",
-  speak
-};
-
-
-var Rabbit = class Rabbit {
-  constructor(type) {
-    this.type = type;
-  }
-  speak(line) {
+function main06() {
+  function speak(line) {
     console.log(`The ${this.type} rabbit says '${line}'`);
   }
-}
 
-var killerRabbit = new Rabbit("killer");
-var blackRabbit = new Rabbit("black");
+  // Methods
+  whiteRabbit = {
+    type: 'white', // property 'type'
+    speak, // bind method 'speak' with fn value
+  };
+  hungryRabbit = {
+    type: 'hungry',
+    speak,
+  };
+  whiteRabbit.speak("bbbb");
 
-Rabbit.prototype.toString = function () {
-  return `a ${this.type} rabbit`;
-};
+  // Prototypes (__proto__)
+  let empty = {};
+  console.log(empty.toString); // function toString() {...}
+  // prototype of empty object
+  console.log(Object.getPrototypeOf({}) == Object.prototype); // true
+  // prototype of empty array
+  console.log(Object.getPrototypeOf([]) == Array.prototype); // true
+  console.log(Object.getPrototypeOf(Math.max) == Function.prototype); // true
 
-var toStringSymbol = Symbol("toString");
-
-var Matrix = class Matrix {
-  constructor(width, height, element = (x, y) => undefined) {
-    this.width = width;
-    this.height = height;
-    this.content = [];
-
-    for (let y = 0; y < height; y++) {
-      for (let x = 0; x < width; x++) {
-        this.content[y * width + x] = element(x, y);
-      }
+  // Classes (ES5) : Only allow methods!
+  class Rabbit {
+    constructor(type) {
+      this.type = type;
+    }
+    speak(line) {
+      console.log(`The ${this.type} rabbit says ${line}.`);
     }
   }
+  // Instantiate Rabbit
+  let weirdRabbit = new Rabbit("weird");
+  console.log(weirdRabbit);
 
-  get(x, y) {
-    return this.content[y * this.width + x];
-  }
-  set(x, y, value) {
-    this.content[y * this.width + x] = value;
-  }
-}
+  // Verify that Rabbit has its own prototype now.
+  console.log(Object.getPrototypeOf(weirdRabbit) == Rabbit.prototype); // true
 
-var MatrixIterator = class MatrixIterator {
-  constructor(matrix) {
-    this.x = 0;
-    this.y = 0;
-    this.matrix = matrix;
-  }
 
-  next() {
-    if (this.y == this.matrix.height) return {
-      done: true
-    };
+  // Maps (key/value) based on Object
+  let ages = {
+    a: 1,
+    b: 2,
+  };
+  console.log(ages.a); // 1
+  console.log(ages["a"]); // 1
+  console.log("a" in ages); // true (test if key in ages)
+  console.log(Object.keys(ages).includes("a")); // true
 
-    let value = {
-      x: this.x,
-      y: this.y,
-      value: this.matrix.get(this.x, this.y)
-    };
-    this.x++;
-    if (this.x == this.matrix.width) {
-      this.x = 0;
-      this.y++;
+  // Better way to instantiate Map.
+  ages = new Map();
+  ages.set("a", 1);
+  ages.set("b", 2);
+  console.log(ages.has("a")); // true
+  console.log(ages.get("b")); // 2
+  console.log(ages.get("what")); // undefined
+
+  // Symbol
+  Rabbit.prototype["speak"]; //
+  let sym = Symbol("boo");
+  Rabbit.prototype[sym] = line => console.log(line);
+
+  // symbol property in object expression.
+  let mySymbol = Symbol("hell");
+  let stringObject = {
+    [mySymbol]() {
+      return "hello";
     }
-    return {
-      value,
-      done: false
-    };
+  };
+  console.log(stringObject[mySymbol]()); // hello
+
+  // Iterator interface [Symbol.iterator]
+  // How to iterate each char in String
+  for (let c of "OK") {
+    console.log(c);
   }
-}
-
-Matrix.prototype[Symbol.iterator] = function () {
-  return new MatrixIterator(this);
-};
-
-var SymmetricMatrix = class SymmetricMatrix extends Matrix {
-  constructor(size, element = (x, y) => undefined) {
-    super(size, size, (x, y) => {
-      if (x < y) return element(y, x);
-      else return element(x, y);
-    });
+  // We can access iterator through Symbol.iterator directly.
+  let iter = "OK" [Symbol.iterator]();
+  while (true) {
+    let c = iter.next(); // StringIterator
+    if (c.done) {
+      break;
+    }
+    console.log(c.value);
   }
 
-  set(x, y, value) {
-    super.set(x, y, value);
-    if (x != y) {
-      super.set(y, x, value);
+  console.log("Hello" [Symbol.iterator]().next()); // {value: "H", done: false}
+
+
+  // Getter, Setter, Static method.
+  class Temp {
+    constructor(celsius) {
+      this.celsius = celsius;
+    }
+    get fahrenheit() {
+      return this.celsius * 1.8 + 32;
+    }
+    set fahrenheit(value) {
+      this.celsius = (value - 32) / 1.8;
+    }
+    static fromFahrenheit(value) {
+      return new Temp((value - 32) / 1.8);
     }
   }
-}
+  let temp = new Temp(22);
+  console.log(temp.fahrenheit); // 71.6 (getter)
+  temp.fahrenheit = 86; // setter
+  console.log(temp.celsius); // 30 (property)
+  console.log(Temp.fromFahrenheit(71.6));
 
-var matrix = new SymmetricMatrix(5, (x, y) => `${x},${y}`);
+  // Inheritance
+  class Animal {
+    constructor(leg = 2) {
+      this.leg = leg;
+    }
+    speak() {
+      console.log("zzz");
+    }
+  }
+  class Dog extends Animal {
+    constructor() {
+      super(4);
+    }
+    speak() {
+      console.log("ruff");
+    }
+  }
+  let dog = new Dog();
+  console.log(dog); // Dog {leg: 4}
+  console.log(dog.speak()); // ruff
+  console.log(dog instanceof Dog); // true
+  console.log(dog instanceof Animal); // true
+  console.log(new Animal(3) instanceof Dog); // false
+}
