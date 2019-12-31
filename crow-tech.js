@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+(function () {
+>>>>>>> 41a6859c5da6bdf75b69471917ac14133742fb9f
   const connections = [
     "Church Tower-Sportsgrounds", "Church Tower-Big Maple", "Big Maple-Sportsgrounds",
     "Big Maple-Woods", "Big Maple-Fabienne's Garden", "Fabienne's Garden-Woods",
@@ -36,9 +40,14 @@
     constructor(connections, storageFor) {
       let reachable = Object.create(null)
       for (let [from, to] of connections.map(conn => conn.split("-"))) {
+<<<<<<< HEAD
         ;
         (reachable[from] || (reachable[from] = [])).push(to);
         (reachable[to] || (reachable[to] = [])).push(from)
+=======
+        ; (reachable[from] || (reachable[from] = [])).push(to)
+          ; (reachable[to] || (reachable[to] = [])).push(from)
+>>>>>>> 41a6859c5da6bdf75b69471917ac14133742fb9f
       }
       this.nodes = Object.create(null)
       for (let name of Object.keys(reachable))
@@ -55,8 +64,12 @@
     }
   }
 
+<<<<<<< HEAD
   const $storage = Symbol("storage"),
     $network = Symbol("network")
+=======
+  const $storage = Symbol("storage"), $network = Symbol("network")
+>>>>>>> 41a6859c5da6bdf75b69471917ac14133742fb9f
 
   function ser(value) {
     return value == null ? null : JSON.parse(JSON.stringify(value))
@@ -103,9 +116,15 @@
   }
 
   let network = new Network(connections, storageFor)
+<<<<<<< HEAD
   // exports.bigOak = network.nodes["Big Oak"]
   // exports.everywhere = network.everywhere.bind(network)
   // exports.defineRequestType = network.defineRequestType.bind(network)
+=======
+  exports.bigOak = network.nodes["Big Oak"]
+  exports.everywhere = network.everywhere.bind(network)
+  exports.defineRequestType = network.defineRequestType.bind(network)
+>>>>>>> 41a6859c5da6bdf75b69471917ac14133742fb9f
 
   if (typeof __sandbox != "undefined") {
     __sandbox.handleDeps = false
@@ -114,7 +133,10 @@
       // nodes have been running for 500ms, to give them a chance to
       // propagate network information.
       let waitFor = Date.now() + 500
+<<<<<<< HEAD
 
+=======
+>>>>>>> 41a6859c5da6bdf75b69471917ac14133742fb9f
       function wrapWaiting(f) {
         return function (...args) {
           let wait = waitFor - Date.now()
@@ -135,3 +157,8 @@
   } else if (typeof module != "undefined" && module.exports) {
     module.exports = exports
   }
+<<<<<<< HEAD
+=======
+})()
+
+>>>>>>> 41a6859c5da6bdf75b69471917ac14133742fb9f
