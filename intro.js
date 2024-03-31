@@ -19,6 +19,15 @@ function sum(array) {
   return total;
 }
 
+mySum = (x) => {
+  let total = 0;
+  x.forEach(item => {
+    total += item;
+  });
+  console.log("total: " + total);
+  return total;
+}
+
 function factorial(n) {
   if (n == 0) {
     return 1;
