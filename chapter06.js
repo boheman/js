@@ -5,11 +5,17 @@ function main06() {
 
   // Methods
   whiteRabbit = {
+    // Properties
     type: 'white', // property 'type'
+
+    // Methods
     speak, // bind method 'speak' with fn value
   };
   hungryRabbit = {
+    // Properties
     type: 'hungry',
+
+    // Methods
     speak,
   };
   whiteRabbit.speak("bbbb");
